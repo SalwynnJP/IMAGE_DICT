@@ -96,17 +96,16 @@ def recup_data(soup, file_name):
 
         if match:
             image_link = match.group(1)
-            image_text = match.group(2).split('&')[0]
-            name_key = image_text.split('/')[-1].split('.')[0]
+            image_text = match.group(2).split('&')[0].split('のイラスト')[0]
+            name_key = image_link.split('/')[-1].split('.')[0]
 
             if image_link and image_text:
-                print(1836284)
-                dic = {}
-                dic[name_key] = {
-                    'img' : image_link,
-                    'description' : image_text
+                dic = { image_text : 
+                    {
+                        'img' : image_link,
+                        'description' : image_text
+                    }
                 }
-    
                 append_to_json(dic, file_name)
 
 def append_to_json(data_to_append, json_file_path):
@@ -119,8 +118,7 @@ def append_to_json(data_to_append, json_file_path):
     """
     # Écrit les données mises à jour dans le fichier JSON
     with open(json_file_path, 'a+') as json_file:
-        print(3724)
-        json.dump(data_to_append, json_file, indent=4)
+        json.dump(data_to_append, json_file, indent=4, ensure_ascii=False)
 
 def scrap_page(url, file_name):
     """
@@ -180,4 +178,4 @@ def main(url_de_base, file_name):
             
 
 if __name__ == '__main__':
-    main(url_de_base, 'data_collection/irasutoya.json')
+    main(url_de_base, 'data_collection/irasutoya_kana.json')
