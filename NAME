@@ -1,4 +1,4 @@
-# Creating the First Image Dictionary for Yomichan 📸
+# Creating the First Image Dictionary for Yomitan 📸
 
 We utilize Python scraping methods to collect a myriad of images from "irasutoya.com" and potentially expand our sources later on.
 
