@@ -76,7 +76,7 @@ def next_page(soup):
     except:
         return None
 
-def recup_data(soup, file_name):
+def recup_data(soup, main_dic) -> None:
     """
     Collecting useful data and creating a dictionary to handle them
 
@@ -97,16 +97,11 @@ def recup_data(soup, file_name):
         if match:
             image_link = match.group(1)
             image_text = match.group(2).split('&')[0].split('のイラスト')[0]
-            name_key = image_link.split('/')[-1].split('.')[0]
 
             if image_link and image_text:
-                dic = { image_text : 
-                    {
-                        'img' : image_link,
-                        'description' : image_text
-                    }
-                }
-                append_to_json(dic, file_name)
+                main_dic[image_text] = {}
+                main_dic[image_text]['img_url'] = image_link
+                main_dic[image_text]['description'] = image_text
 
 def append_to_json(data_to_append, json_file_path):
     """
@@ -120,7 +115,7 @@ def append_to_json(data_to_append, json_file_path):
     with open(json_file_path, 'a+') as json_file:
         json.dump(data_to_append, json_file, indent=4, ensure_ascii=False)
 
-def scrap_page(url, file_name):
+def scrap_page(url, main_dic):
     """
     This function scrapes the given URL and saves the data in a JSON file.
 
@@ -136,15 +131,14 @@ def scrap_page(url, file_name):
     actual_page = soup_creation(url)
 
     # Scrape the current page
-    recup_data(actual_page, file_name)
+    recup_data(actual_page, main_dic)
     
-
     # Get the next page to analyze if it exists
     next_page_url = next_page(actual_page)
 
     # Recursion of the function if the next page exists
     if next_page_url is not None:
-        scrap_page(next_page_url, file_name)
+        scrap_page(next_page_url, main_dic)
 
 def main(url_de_base, file_name):
     '''
@@ -161,6 +155,9 @@ def main(url_de_base, file_name):
 
     # Retrieve all desired links from the current page
     links_theme = get_main_page_all_links(main_page)
+    
+    # Creation of the main_dic that will keep all the data in it
+    main_dic = {}
 
     for part_of_link in links_theme:
         if part_of_link.startswith("/p/"):
@@ -172,10 +169,16 @@ def main(url_de_base, file_name):
 
                 for sub_link in links_sub_theme:
                     # Create soup for the sub-theme page
-                    scrap_page(sub_link, file_name)
+                    scrap_page(sub_link, main_dic)
+                    
             except:
                 continue
             
+            
+    
+                
+    append_to_json(main_dic, file_name)
+            
 
 if __name__ == '__main__':
-    main(url_de_base, 'data_collection/irasutoya_kana.json')
+    main(url_de_base, 'data_collection/irasutoya_kana_bis.json')

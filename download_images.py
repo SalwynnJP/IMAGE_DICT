@@ -2,7 +2,7 @@ import json
 import requests
 
 dic = {}
-json_file_path = "data_collection/irasutoya_kana.json"
+json_file_path = "data_collection/irasutoya_kana_bis.json"
 
 # Charge les données du JSON dans un dictionnaire
 try:
